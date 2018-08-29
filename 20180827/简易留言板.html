@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script src="js/vue.js"></script>
+    <script>
+        $(function(){
+            var vm=new Vue({
+                el:"#app",
+                data:{
+                    myData:[],
+                    id:"",
+                    username:"",
+                    age:"",
+                    myIndex:-2,
+                    title:""
+                },
+                methods:{
+                    add:function(){
+                        this.myData.push({
+                            id:this.id,
+                            name:this.username,
+                            age:this.age,
+                        });
+                        this.id="",
+                        this.username="";
+                        this.age="";
+                    },
+                    del:function(index){
+                        if(index==-1){
+                            this.myData=[];
+                        }else{
+                            this.myData.splice(index,1);
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <!-- container:用于固定宽度并支持响应式布局的容器 -->
+    <div class="container" id="app" style="margin-top:50px;">
+        <!-- role样式:转换角色使用 -->
+        <form role="form">
+            <!-- form-group样式:使label元素和input元素获得最好的排列。 -->
+            <div class="form-group">
+                <label for="username">序  号:</label>
+                <!-- form-control样式:设置宽度属性为width:100% -->
+                <input type="text" id="username" class="form-control" placeholder="请输入用户名" v-model="id">
+            </div>
+            <div class="form-group">
+                    <label for="username">用户名:</label>
+                    <input type="text" id="username" class="form-control" placeholder="请输入用户名" v-model="username">
+                </div>
+            <div class="form-group">
+                <label for="age">年  龄</label>
+                <input type="text" id="age" class="form-control" placeholder="请输入年龄" v-model="age">
+            </div>
+            <div class="form-group">
+                <!-- btn-default/btn-primary/btn-success/btn-info/btn-warning/btn-danger -->
+                <!-- lg sm xs -->
+                <input type="button" value="添加" class="btn btn-primary" v-on:click="add()">
+                <input type="reset" value="重置" class="btn btn-danger">
+            </div>
+        </form>
+        <!-- 
+            table样式:赋予table基本样式 
+            table-bordered样式:为表格和其中的每个单元格增加边框
+            table-hover样式:可以对鼠标悬停状态作出响应。
+        -->
+        <table class="table table-bordered table-hover">
+            <!-- text-muted/text-primary/text-success/text-info/text-warning/text-danger -->
+            <caption class="h2 text-info text-center">用户信息表</caption>
+            <tr class="text-danger">
+                <!-- text-left\text-center\text-right -->
+                <th class="text-center">序号</th>
+                <th class="text-center">名字</th>
+                <th class="text-center">年龄</th>
+                <th class="text-center">操作</th>
+            </tr>
+            <tr class="text-center" v-for="(item,index) in myData">
+                <td>{{item.id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.age}}</td>
+                <td>
+                    <!-- 
+                        data-toggle组件:指事件触发形式，常用的有modal,popover,tooltips等
+                        data-target组件:指事件的目标 
+                    -->
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#layer" v-on:click="myIndex=index;title='确认删除么?';">删除</button>
+                </td>
+            </tr>
+            <tr v-show="myData.length!=0">
+                <td colspan="4" class="text-right">
+                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#layer" v-on:click="myIndex=-1;title='确认删除全部么?';">删除全部</button>
+                </td>
+            </tr>
+            <tr v-show="myData.length==0">
+                <td colspan="4" class="text-center text-muted">
+                    <p>暂无数据....</p>
+                </td>
+            </tr>
+        </table>
+
+        <!--模态框 弹出框-->
+        <div role="dialog" class="modal fade" id="layer">
+            <input type="text" v-model="myIndex">
+            <!-- 盒子 modal-lg:大  modal-sm:小 -->
+            <div class="modal-dialog">
+                <!-- 内容 -->
+                <div class="modal-content">
+                    <!-- 头部 -->
+                    <div class="modal-header">
+                        <!-- data-dismiss:点击时关闭模态框 -->
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">{{title}}</h4>
+                    </div>
+                    <!-- 内容 -->
+                    <div class="modal-body text-right">
+                        <button data-dismiss="modal" class="btn btn-primary btn-sm">取消</button>
+                        <button data-dismiss="modal" class="btn btn-danger btn-sm" v-on:click="del(myIndex)">确认</button>
+                    </div>
+                    <!-- <div class="modal-footer"></div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
